@@ -36,7 +36,8 @@ class Plane {
         this.plane = gltf.scene
         this.scene.add(this.plane)
         this.velocity = new Vector3(0, 0, 0.1)
-        this.propellor = this.plane.getObjectByName('propellor')
+        this.propeller = this.plane.getObjectByName('propeller')
+        console.log(this.plane)
         this.ready = true
       },
       // called while loading is progressing
@@ -47,8 +48,8 @@ class Plane {
   }
 
   update(time) {
-    if (this.propellor) {
-      this.propellor.rotateZ(1)
+    if (this.propeller) {
+      this.propeller.rotateZ(1)
     }
 
     this.plane.rotation.set(0, 0, Math.sin(time * 3) * 0.2, 'XYZ')
