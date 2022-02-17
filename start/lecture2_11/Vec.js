@@ -1,52 +1,52 @@
-class Vec{
-  constructor(x=0,y=0){
-    this.x = x;
-    this.y = y;
+class Vec {
+  constructor(x = 0, y = 0) {
+    this.x = x
+    this.y = y
   }
 
-  copy(pt){
-    this.x = pt.x;
-    this.y = pt.y;
+  copy(pt) {
+    this.x = pt.x
+    this.y = pt.y
 
-    return this;
+    return this
   }
 
-  clone(){
-    return new this.constructor().copy( this );
+  clone() {
+    return new this.constructor().copy(this)
   }
 
-  add(pt){
-    this.x += pt.x;
-    this.y += pt.y;
+  add(pt) {
+    this.x += pt.x
+    this.y += pt.y
 
-    return this;
+    return this
   }
 
-  sub(pt){
-    this.x -= pt.x;
-    this.y -= pt.y;
+  sub(pt) {
+    this.x -= pt.x
+    this.y -= pt.y
 
-    return this;
+    return this
   }
 
-  distanceTo(pt){
-    const delta = this.clone().sub(pt);
+  distanceTo(pt) {
+    const delta = this.clone().sub(pt)
 
-    return Math.sqrt( delta.x*delta.x + delta.y*delta.y );
+    return Math.sqrt(delta.x * delta.x + delta.y * delta.y)
   }
 
   angle() {
-  	const theta = Math.atan2( - this.y, - this.x ) + Math.PI;
+    const theta = Math.atan2(-this.y, -this.x) + Math.PI
 
-		return theta;
-	}
+    return theta
+  }
 
-  angleBetween(pt){
-    const theta1 = this.angle();
-    const theta2 = pt.angle();
+  angleBetween(pt) {
+    const theta1 = this.angle()
+    const theta2 = pt.angle()
 
-    return Math.abs(theta1 - theta2) * 180 / Math.PI;
+    return (Math.abs(theta1 - theta2) * 180) / Math.PI
   }
 }
 
-export{Vec};
+export { Vec }
