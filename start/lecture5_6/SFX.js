@@ -1,37 +1,76 @@
-import { AudioListener, Audio, PositionalAudio, AudioLoader } from '../../libs/three137/three.module.js';
+import {
+  AudioListener,
+  Audio,
+  PositionalAudio,
+  AudioLoader
+} from '../../libs/three137/three.module.js'
 
-class SFX{
-    constructor(camera, assetsPath){
-        
-    }
+class SFX {
+  constructor(camera, assetsPath) {
+    this.listener = new AudioListener()
+    camera.add(this.listener)
+    this.assetsPath = assetsPath
+    this.sounds = {}
+  }
 
-    load(name, loop=false, vol=0.5, obj=null){
-        
-    }
+  load(name, loop = false, vol = 0.5, obj = null) {
+    const sound = obj
+      ? new PositionalAudio(this.listener)
+      : new Audio(this.listener)
 
-    setVolume(name, volume){
-        
-    }
+    this.sounds[name] = sound
+    const audioLoader = new AudioLoader().setPath(this.assetsPath)
 
-    setLoop(name, loop){
-        
-    }
+    audioLoader.load(`${name}.mp3`, (buffer) => {
+      sound.setBuffer(buffer)
+      sound.setLoop(loop)
+      sound.setVolume(vol)
+    })
+  }
 
-    play(name){
-        
-    }
+  setVolume(name, volume) {
+    const sound = this.sounds[name]
 
-    stop(name){
-        
+    if (sound) {
+      sound.setVolume(volume)
     }
+  }
 
-    stopAll(){
-        
-    }
+  setLoop(name, loop) {
+    const sound = this.sounds[name]
 
-    pause(name){
-        
+    if (sound) {
+      sound.setLoop(loop)
     }
+  }
+
+  play(name) {
+    const sound = this.sounds[name]
+
+    if (sound && !sound.isPlaying) {
+      sound.play()
+    }
+  }
+
+  stop(name) {
+    const sound = this.sounds[name]
+
+    if (sound && sound.isPlaying) {
+      sound.stop()
+    }
+  }
+
+  stopAll() {
+    Object.keys(this.sounds).forEach((name) => this.stop(name))
+  }
+
+  pause(name) {
+    const sound = this.sounds[name]
+
+    if (sound && sound.isPlaying) {
+      sound.pause()
+    }
+  }
 }
 
-export { SFX };
+export { SFX }

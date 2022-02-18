@@ -1,8 +1,14 @@
-import { IcosahedronGeometry, TextureLoader, ShaderMaterial, Mesh, ShaderChunk } from '../../libs/three137/three.module.js';
-import { noise } from '../../libs/Noise.js';
-import { Tween } from '../../libs/Toon3D.js';
+import {
+  IcosahedronGeometry,
+  TextureLoader,
+  ShaderMaterial,
+  Mesh,
+  ShaderChunk
+} from '../../libs/three137/three.module.js'
+import { noise } from '../../libs/Noise.js'
+import { Tween } from '../../libs/Toon3D.js'
 
-class Explosion{
+class Explosion {
   static vshader = `
 #include <noise>
 
@@ -58,70 +64,80 @@ void main() {
   gl_FragColor = vec4( color.rgb, u_opacity );
 }
 `
-  constructor(parent, obstacles){
-    const geometry = new IcosahedronGeometry( 20, 4 );
-    
-    this.obstacles = obstacles;
+  constructor(parent, obstacles) {
+    const geometry = new IcosahedronGeometry(20, 4)
+
+    this.obstacles = obstacles
 
     this.uniforms = {
       u_time: { value: 0.0 },
-      u_mouse: { value:{ x:0.0, y:0.0 }},
+      u_mouse: { value: { x: 0.0, y: 0.0 } },
       u_opacity: { value: 0.6 },
-      u_resolution: { value:{ x:0, y:0 }},
-      u_tex: { value: new TextureLoader().load(`${game.assetsPath}plane/explosion.png`)}
+      u_resolution: { value: { x: 0, y: 0 } },
+      u_tex: {
+        value: new TextureLoader().load(`${game.assetsPath}plane/explosion.png`)
+      }
     }
 
-    ShaderChunk.noise = noise;
+    ShaderChunk.noise = noise
 
-    const material = new ShaderMaterial( {
+    const material = new ShaderMaterial({
       uniforms: this.uniforms,
       vertexShader: Explosion.vshader,
       fragmentShader: Explosion.fshader,
       transparent: true,
       opacity: 0.6
-    } );
+    })
 
-    this.ball = new Mesh( geometry, material );
-    const scale = 0.05;
-    this.ball.scale.set(scale, scale, scale);
-    parent.add( this.ball );
+    this.ball = new Mesh(geometry, material)
+    const scale = 0.05
+    this.ball.scale.set(scale, scale, scale)
+    parent.add(this.ball)
 
-    this.tweens = [];
-    this.tweens.push( new Tween(this.ball.scale, 'x', 0.2, 1.5, this.onComplete.bind(this), 'outQuad') );
+    this.tweens = []
+    this.tweens.push(
+      new Tween(
+        this.ball.scale,
+        'x',
+        0.2,
+        1.5,
+        this.onComplete.bind(this),
+        'outQuad'
+      )
+    )
 
-    this.active = true;
+    this.active = true
   }
 
-  onComplete(){
-    this.ball.parent.remove(this.ball);
-    this.tweens = [];
-    this.active = false;
-    this.ball.geometry.dispose();
-    this.ball.material.dispose();
-    if (this.obstacles) this.obstacles.removeExplosion(this);
+  onComplete() {
+    this.ball.parent.remove(this.ball)
+    this.tweens = []
+    this.active = false
+    this.ball.geometry.dispose()
+    this.ball.material.dispose()
+    if (this.obstacles) this.obstacles.removeExplosion(this)
   }
 
   update(time) {
-    if (!this.active) return;
+    if (!this.active) return
 
-    this.uniforms.u_time.value += time;
-    this.uniforms.u_opacity.value = this.ball.material.opacity;
+    this.uniforms.u_time.value += time
+    this.uniforms.u_opacity.value = this.ball.material.opacity
 
-    if (this.tweens.length<2){
-      const elapsedTime = this.uniforms.u_time.value - 1;
+    if (this.tweens.length < 2) {
+      const elapsedTime = this.uniforms.u_time.value - 1
 
-      if (elapsedTime > 0){
-        this.tweens.push( new Tween(this.ball.material, 'opacity', 0, 0.5) );
+      if (elapsedTime > 0) {
+        this.tweens.push(new Tween(this.ball.material, 'opacity', 0, 0.5))
       }
     }
 
-    this.tweens.forEach( tween => {
-      tween.update(time);
-    });
+    this.tweens.forEach((tween) => {
+      tween.update(time)
+    })
 
-    this.ball.scale.y = this.ball.scale.z = this.ball.scale.x;
+    this.ball.scale.y = this.ball.scale.z = this.ball.scale.x
   }
-
 }
 
-export { Explosion };
+export { Explosion }
